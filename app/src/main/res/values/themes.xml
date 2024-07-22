@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.DisasterProject" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<!--for the same color in allthe page sof the appp-->
+<!--        <item name="android:windowBackground">#ffffff</item>-->
+    </style>
+
+    <style name="Theme.DisasterProject" parent="Base.Theme.DisasterProject" />
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+<!--        backgrounf-->
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+<!--        now which theme to be displalyed after the splash screen -->
+        <item name="postSplashScreenTheme">@style/Base.Theme.DisasterProject</item>
+        <item name="android:statusBarColor">@color/MyColor</item>
+    </style>
+</resources>
