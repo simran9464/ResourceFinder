@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DisasterProject</string>
+    <string name="google_map_api_key">AIzaSyCDYDmZeqyzIZhcVuUPqgWMrN_8rYAUqpk</string>
 </resources>

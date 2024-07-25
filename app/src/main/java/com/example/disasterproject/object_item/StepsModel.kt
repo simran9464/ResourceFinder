@@ -1,5 +1,6 @@
 package com.example.disasterproject.object_item
 
 data class StepsModel(
-    var steps : String= ""
+    val id : Int=0,
+    var steps : String
 )

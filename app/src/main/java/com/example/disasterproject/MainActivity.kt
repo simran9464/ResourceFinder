@@ -2,8 +2,12 @@ package com.example.disasterproject
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.CalendarContract
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -39,6 +43,8 @@ class MainActivity : AppCompatActivity(),SignOutInterface {
                 startActivity(intent)
                 finish()
         }
+
+        addTextWatchers()
 //        calling the nextbutton
         nextBtn.setOnClickListener {
             fName=editFname.text.toString()
@@ -86,6 +92,42 @@ class MainActivity : AppCompatActivity(),SignOutInterface {
         editContact=findViewById(R.id.editTextPhone)
         nextBtn=findViewById(R.id.buttonNext)
     }
+
+    private fun addTextWatchers() {
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkFieldsForEmptyValues()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        editFname.addTextChangedListener(textWatcher)
+        editLname.addTextChangedListener(textWatcher)
+        editEmail.addTextChangedListener(textWatcher)
+        editContact.addTextChangedListener(textWatcher)
+    }
+
+    private fun checkFieldsForEmptyValues() {
+        fName = editFname.text.toString()
+        lName = editLname.text.toString()
+        email = editEmail.text.toString()
+        contact = editContact.text.toString()
+
+        nextBtn.isEnabled = fName.isNotEmpty() && lName.isNotEmpty() && email.isNotEmpty() && contact.isNotEmpty()
+
+        if (nextBtn.isEnabled) {
+            nextBtn.setBackgroundColor(Color.GREEN)
+            nextBtn.setTextColor(Color.WHITE)
+        // Change to your desired color
+        } else {
+            nextBtn.setBackgroundColor(Color.LTGRAY)
+            nextBtn.setTextColor(Color.WHITE)// Change to your desired color
+        }
+    }
+
 
     override fun backToSignIn() {
         Toast.makeText(MainActivity@this,"Back to Sign in ",Toast.LENGTH_LONG).show()

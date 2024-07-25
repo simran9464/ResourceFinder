@@ -7,7 +7,12 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.disasterproject.database.DatabaseHelper.Companion
+import com.example.disasterproject.object_item.LocationModel
+
 import com.example.disasterproject.object_item.StepsModel
+
+
 
 class StepsDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -48,12 +53,19 @@ class StepsDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
         if (cursor.moveToFirst()) {
             do {
+                val id =cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
                 val steps = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STEPS))
-                stepsList.add(StepsModel(steps))
+                stepsList.add(StepsModel(id,steps))
             } while (cursor.moveToNext())
         }
         cursor.close()
         db.close()
         return stepsList
     }
+    fun deletesteps(id: Int) {
+        val db = this.writableDatabase
+        db.delete(TABLE_STEPS, "${COLUMN_ID} = ?", arrayOf(id.toString()))
+        db.close()
+    }
+
 }

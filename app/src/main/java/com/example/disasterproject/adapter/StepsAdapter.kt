@@ -9,7 +9,10 @@ import com.example.disasterproject.R
 import com.example.disasterproject.object_item.LocationModel
 import com.example.disasterproject.object_item.StepsModel
 
-class StepsAdapter(private val mList: ArrayList<StepsModel>):RecyclerView.Adapter<StepsAdapter.MyViewHolder>() {
+class StepsAdapter(
+    private val mList: ArrayList<StepsModel>,
+    private val onDelete:(StepsModel)-> Unit
+  ):RecyclerView.Adapter<StepsAdapter.MyViewHolder>() {
     inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
        val steps :TextView=itemView.findViewById(R.id.stepsTV)
        fun bindView(std:StepsModel) {
@@ -31,6 +34,12 @@ class StepsAdapter(private val mList: ArrayList<StepsModel>):RecyclerView.Adapte
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem =mList[position]
         holder.bindView(currentItem)
+    }
+    fun removeItem(position: Int) {
+        val steps = mList[position]
+        onDelete(steps) // Call the delete function
+        mList.removeAt(position)
+        notifyItemRemoved(position)
     }
 }
 

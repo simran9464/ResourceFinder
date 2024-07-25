@@ -52,12 +52,26 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             do {
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
                 val location = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCATION))
-                locationList.add(LocationModel(location))
+                locationList.add(LocationModel(id,location))
             } while (cursor.moveToNext())
         }
         cursor.close()
         db.close()
         return locationList
+    }
+    fun updateLocation(location: LocationModel): Int {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_LOCATION, location.location)
+        }
+        val result = db.update(TABLE_LOCATIONS, values, "$COLUMN_ID = ?", arrayOf(location.id.toString()))
+        db.close()
+        return result
+    }
+    fun deleteLocation(id: Int) {
+        val db = this.writableDatabase
+        db.delete(TABLE_LOCATIONS, "$COLUMN_ID = ?", arrayOf(id.toString()))
+        db.close()
     }
 
 }

@@ -1,10 +1,12 @@
 package com.example.disasterproject
 
 import android.content.ClipData.Item
+import android.content.Intent
 import android.health.connect.datatypes.ExerciseRoute.Location
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +29,7 @@ class ResourceLocationActivity : AppCompatActivity() {
     lateinit var locationActual:String
     lateinit var stepsActual:String
     lateinit var locationBtn: Button
+    lateinit var btnToMap: Button
     lateinit var stepsBtn: Button
     lateinit var arrayListLocation :ArrayList<LocationModel>
     lateinit var arrayListSteps :ArrayList<StepsModel>
@@ -36,19 +39,73 @@ class ResourceLocationActivity : AppCompatActivity() {
     lateinit var stepsDb : StepsDatabase
     lateinit var locAdapter: LocAdapter
     lateinit var stepsAdapter :StepsAdapter
+    lateinit var imgToMap:ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resource_location2)
 //        Initializing all the refernces
         initreferce()
         dbhelper = DatabaseHelper(this)
+        locAdapter = LocAdapter(arrayListLocation){
+                location ->
+            dbhelper.deleteLocation(location.id)
+            arrayListLocation.remove(location)
+            locAdapter.notifyDataSetChanged()
+        }
+        locRv.layoutManager =LinearLayoutManager(this)
+        locRv.adapter = locAdapter
+
         stepsDb = StepsDatabase(this)
+        stepsAdapter = StepsAdapter(arrayListSteps){
+            steps->
+            stepsDb.deletesteps(steps.id)
+            arrayListSteps.remove(steps)
+            stepsAdapter.notifyDataSetChanged()
+        }
+        stepsRv.layoutManager=LinearLayoutManager(this)
+        stepsRv.adapter = stepsAdapter
+
+        val itemTouchHelper = ItemTouchHelper(object :ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean =false
+
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                locAdapter.removeItem(position)
+            }
+
+        })
+        itemTouchHelper.attachToRecyclerView(locRv)
+
+        val itemTouchHelperr = ItemTouchHelper(object :ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean =false
+
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                stepsAdapter.removeItem(position)
+            }
+
+        })
+        itemTouchHelperr.attachToRecyclerView(stepsRv)
+
+
+
         arrayListLocation.addAll(dbhelper.getAllLocations())
         arrayListSteps.addAll(stepsDb.getAllLocations())
-        locAdapter.notifyDataSetChanged()
+
         stepsAdapter.notifyDataSetChanged()
         locationBtn.setOnClickListener {
-           val locationActual =locationToWriteET.text.toString()
+           locationActual =locationToWriteET.text.toString()
             if(locationActual.isEmpty()){
                 Toast.makeText(MainActivity@this,"No Location Provided",Toast.LENGTH_LONG).show()
                 return@setOnClickListener
@@ -65,6 +122,10 @@ class ResourceLocationActivity : AppCompatActivity() {
 //            locRv.adapter = LocAdapter(arrayListLocation)
             Toast.makeText(MainActivity@this,"Location is added",Toast.LENGTH_LONG).show()
             locationToWriteET.text.clear()
+        }
+        imgToMap.setOnClickListener {
+            val intent = Intent(this,MapActivity::class.java)
+            startActivity(intent)
         }
         stepsBtn.setOnClickListener {
             stepsActual=stepsEditText.text.toString()
@@ -93,12 +154,9 @@ class ResourceLocationActivity : AppCompatActivity() {
         arrayListLocation= arrayListOf<LocationModel>()
         stepsRv =findViewById(R.id.stepsRV)
         locRv =findViewById(R.id.locRV)
-        locAdapter = LocAdapter(arrayListLocation)
-        locRv.layoutManager =LinearLayoutManager(this)
-        locRv.adapter = locAdapter
-        stepsAdapter = StepsAdapter(arrayListSteps)
-        stepsRv.layoutManager=LinearLayoutManager(this)
-        stepsRv.adapter = stepsAdapter
+        imgToMap=findViewById(R.id.imageGMap)
+
+
     }
 
 }

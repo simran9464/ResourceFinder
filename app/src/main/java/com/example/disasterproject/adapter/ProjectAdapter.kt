@@ -34,5 +34,12 @@ class ProjectAdapter(
         holder.resType.text=mList[position].categoryName
         holder.itemView.setOnClickListener{onItemClick(mList[position])}
     }
+    fun removeItem(position: Int) {
+        if (position >= 0 && position < mList.size) {
+            mList.removeAt(position)
+            notifyItemRemoved(position)
+        }
+    }
+
 
 }
